@@ -38,20 +38,12 @@ jobs:
         run: echo "RELEASE_DATA=$(curl -s https://services.sonarr.tv/v1/releases | jq -c ."\"${{ matrix.channel }}\"")" >> "$GITHUB_ENV"
         shell: bash
 
-      # Extract data from the JSON response
       - name: Extract data from JSON response
         id: extract_data
         run: |
           echo "release=$(echo $RELEASE_DATA | jq -r '.version')" >> "$GITHUB_OUTPUT"
           echo "download_url=$(echo $RELEASE_DATA | jq -r '.linux.manual.url')" >> "$GITHUB_OUTPUT"
           echo "download_hash=$(echo $RELEASE_DATA | jq -r '.linux.manual.hash')" >> "$GITHUB_OUTPUT"
-        shell: bash
-
-      - name: Print values for testing
-        run: |
-          echo "release: ${{ steps.extract_data.outputs.release }}"
-          echo "download_url: ${{ steps.extract_data.outputs.download_url }}"
-          echo "download_hash: ${{ steps.extract_data.outputs.download_hash }}"
         shell: bash
 
       - name: Build and push
