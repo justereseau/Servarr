@@ -4,15 +4,16 @@ env:
   IMAGE_NAME: ghcr.io/justereseau/sonarr
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '45 6 * * *'
   push:
     branches:
       - main
     paths-ignore:
-      - 'README.md'
-      - 'LICENSE'
-      - '.github/**'
+      - README.md
+      - LICENSE
+      - .github/**
 
 jobs:
   push-store-image:
@@ -62,7 +63,7 @@ jobs:
           file: ./Dockerfile
           push: true
           build-args: |
-            RELEASE_TAG=${{ steps.get_latest_release.outputs.release }}
-            DOWNLOAD_URL=${{ steps.get_latest_release.outputs.download_url }}
-            DOWNLOAD_HASH=${{ steps.get_latest_release.outputs.download_hash }}
-          tags: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{ steps.get_latest_release.outputs.release }}
+            RELEASE_TAG=${{ steps.extract_data.outputs.release }}
+            DOWNLOAD_URL=${{ steps.extract_data.outputs.download_url }}
+            DOWNLOAD_HASH=${{ steps.extract_data.outputs.download_hash }}
+          tags: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{ steps.extract_data.outputs.release }}
