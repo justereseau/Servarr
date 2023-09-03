@@ -17,11 +17,15 @@ on:
 jobs:
   push-store-image:
     runs-on: ubuntu-latest
+
+    # Run matrix jobs in parallel even if one fails
     strategy:
+      fail-fast: false
       matrix:
         channel:
           - v4-preview
           - v3-stable
+          - v2-stable
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@main
