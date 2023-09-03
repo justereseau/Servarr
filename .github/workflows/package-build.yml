@@ -17,15 +17,6 @@ on:
 jobs:
   push-store-image:
     runs-on: ubuntu-latest
-
-    # Run matrix jobs in parallel even if one fails
-    strategy:
-      fail-fast: false
-      matrix:
-        channel:
-          - v4-preview
-          - v3-stable
-          - v2-stable
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@main
@@ -39,7 +30,7 @@ jobs:
 
       - name: Read latest release
         id: get_latest_release
-        run: echo "RELEASE_DATA=$(curl -s https://services.sonarr.tv/v1/releases | jq -c ."\"${{ matrix.channel }}\"")" >> "$GITHUB_ENV"
+        run: echo "RELEASE_DATA=$(curl -s https://services.sonarr.tv/v1/releases | jq -c ."\"v3-stable\"")" >> "$GITHUB_ENV"
         shell: bash
 
       - name: Extract data from JSON response
