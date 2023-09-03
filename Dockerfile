@@ -7,7 +7,9 @@ ARG DOWNLOAD_HASH
 ARG BUILD_DATE
 
 LABEL build="JusteReseau - Version: ${RELEASE_TAG}"
-LABEL description="This is a docker image for Sonarr, that work with Kubernetes security baselines."
+LABEL org.opencontainers.image.description="This is a docker image for Sonarr, that work with Kubernetes security baselines."
+LABEL org.opencontainers.image.licenses="WTFPL"
+LABEL org.opencontainers.image.source="https://github.com/justereseau/Sonarr"
 LABEL maintainer="JusteSonic"
 
 # Do the package update and install
@@ -22,7 +24,7 @@ RUN wget -O /tmp/binary.tar.gz ${DOWNLOAD_URL} \
   && rm -rf /tmp/*
 
 # Ensure the Servarr user and group exists and set the permissions
-RUN adduser -D -u 1111 -h /config servarr \
+RUN adduser -D -u 1000 -h /config servarr \
   && mkdir -p /config \
   && chown -R servarr:servarr /config \
   && chown -R servarr:servarr /opt/Sonarr
