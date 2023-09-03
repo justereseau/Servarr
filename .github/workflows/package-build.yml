@@ -13,7 +13,6 @@ on:
     paths-ignore:
       - README.md
       - LICENSE
-      - .github/**
 
 jobs:
   push-store-image:
@@ -23,7 +22,6 @@ jobs:
         channel:
           - v4-preview
           - v3-stable
-          - v2-stable
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@main

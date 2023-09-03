@@ -23,6 +23,7 @@ RUN wget -O /tmp/binary.tar.gz ${DOWNLOAD_URL} \
 
 # Ensure the Servarr user and group exists and set the permissions
 RUN adduser -D -u 1000 -h /config servarr \
+  && mkdir /config \
   && chown -R servarr:servarr /config \
   && chown -R servarr:servarr /opt/Sonarr
 
