@@ -13,7 +13,7 @@ LABEL org.opencontainers.image.source="https://github.com/justereseau/Sonarr"
 LABEL maintainer="JusteSonic"
 
 # Do the package update and install
-RUN apk update && apk upgrade \
+RUN apk update && apk upgrade && apk add mediainfo \
   && apk add --no-cache mono --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
   && cert-sync /etc/ssl/certs/ca-certificates.crt \
   && rm -rf /var/cache/apk/*
