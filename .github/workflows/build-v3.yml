@@ -6,7 +6,7 @@ env:
 on:
   workflow_dispatch:
   schedule:
-    - cron: '45 6 * * *'
+    - cron: "45 6 * * *"
   push:
     branches:
       - main
@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@main
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -42,7 +42,7 @@ jobs:
         shell: bash
 
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
