@@ -44,11 +44,11 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./v3
           file: ./Dockerfile
           push: true
           build-args: |
             RELEASE_TAG=${{ steps.extract_data.outputs.release }}
             DOWNLOAD_URL=${{ steps.extract_data.outputs.download_url }}
             DOWNLOAD_HASH=${{ steps.extract_data.outputs.download_hash }}
-          tags: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{ steps.extract_data.outputs.release }}
+          tags: ${{ env.IMAGE_NAME }}:v3,${{ env.IMAGE_NAME }}:${{ steps.extract_data.outputs.release }}
