@@ -1,0 +1,53 @@
+name: Deploy Images to GHCR
+
+env:
+  IMAGE_NAME: ghcr.io/justereseau/sonarr
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "45 6 * * *"
+  push:
+    branches:
+      - main
+      - implement_v4
+    paths-ignore:
+      - README.md
+      - LICENSE
+
+jobs:
+  sonarr_v4_stable:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout GitHub Action
+        uses: actions/checkout@main
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read latest release
+        id: get_latest_release
+        run: |
+          echo "RELEASE_DATA=$(curl -s https://services.sonarr.tv/v1/releases | jq -c '."v4-stable" | {tag: .version, assets: .linuxMusl | map_values(.archive)}')" >> "$GITHUB_ENV"
+        shell: bash
+
+      - name: Extract data from JSON response
+        id: extract_data
+        run: |
+          echo "release=$(echo $RELEASE_DATA | jq -r '.tag')" >> "$GITHUB_OUTPUT"
+          echo "release_data=$RELEASE_DATA" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./v4
+          push: true
+          build-args: |
+            RELEASE_TAG=${{ steps.extract_data.outputs.release }}
+            RELEASE_DATA=${{ steps.extract_data.outputs.release_data }}
+          tags: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{ steps.extract_data.outputs.release }}
