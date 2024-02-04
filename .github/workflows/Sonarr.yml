@@ -1,24 +1,23 @@
-name: Build and Push Radarr Docker Image
+name: Build and Push Sonarr Docker Image
 
 env:
-  IMAGE_NAME: ghcr.io/justereseau/radarr
-  PRODUCT_NAME: Radarr
+  IMAGE_NAME: ghcr.io/justereseau/sonarr
+  PRODUCT_NAME: Sonarr
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   - cron: "45 6 * * *"
+  schedule:
+    - cron: "45 6 * * *"
   push:
     branches:
       - main
-      - implement_v4
     paths-ignore:
       - README.md
       - LICENSE
 
 jobs:
-  radarr_v4:
-    name: Radarr v4
+  sonarr_v4:
+    name: Sonarr v4
     runs-on: ubuntu-latest
     steps:
       - name: Checkout GitHub Action
@@ -42,12 +41,12 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: ./v4
+          context: .
           push: true
           platforms: linux/amd64,linux/arm64
           build-args: |
             RELEASE_TAG=${{ steps.get_latest_release.outputs.release_tag }}
             PRODUCT_NAME=${{ env.PRODUCT_NAME }}
-            BRANCH_NAME=master
-            OS_NAME=linux-musl-core
+            BRANCH_NAME=main
+            OS_NAME=linux-musl
           tags: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{ steps.get_latest_release.outputs.release_tag }}
