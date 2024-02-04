@@ -42,11 +42,15 @@ jobs:
           echo "release_data=$RELEASE_DATA" >> "$GITHUB_OUTPUT"
         shell: bash
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: ./v4
           push: true
+          platforms: linux/amd64,linux/arm64
           build-args: |
             RELEASE_TAG=${{ steps.extract_data.outputs.release }}
             RELEASE_DATA=${{ steps.extract_data.outputs.release_data }}
