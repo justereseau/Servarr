@@ -1,33 +1,59 @@
-FROM alpine:latest
+FROM alpine:latest as builder
 
 # Read the release version from the build args
 ARG RELEASE_TAG
-ARG DOWNLOAD_URL
-ARG DOWNLOAD_HASH
-ARG BUILD_DATE
+ARG PRODUCT_NAME
+ARG BRANCH_NAME
+ARG OS_NAME
+
+# Set the working directory
+WORKDIR /build
+
+# Install the build dependencies
+RUN apk update && apk upgrade && apk add --no-cache jq curl
+
+# Get the download URL
+RUN case $(uname -m) in \
+  x86_64) \
+  echo https://github.com/${PRODUCT_NAME}/${PRODUCT_NAME}/releases/download/v${RELEASE_TAG}/${PRODUCT_NAME}.${BRANCH_NAME}.${RELEASE_TAG}.${OS_NAME}-x64.tar.gz > /tmp/download_url \
+  ;; \
+  aarch64) \
+  echo https://github.com/${PRODUCT_NAME}/${PRODUCT_NAME}/releases/download/v${RELEASE_TAG}/${PRODUCT_NAME}.${BRANCH_NAME}.${RELEASE_TAG}.${OS_NAME}-arm64.tar.gz > /tmp/download_url \
+  ;; \
+  *) \
+  echo "Unsupported architecture > $(uname -m)" \
+  exit 1 \
+  ;; \
+  esac
+
+# Download and extract the binary
+RUN wget -O /tmp/binary.tar.gz $(cat /tmp/download_url) && \
+  tar -xvzf /tmp/binary.tar.gz -C /build --strip-components=1 && \
+  rm -rf /build/${PRODUCT_NAME}.Update
+
+# Write a launch script
+RUN echo "#!/bin/sh" > /build/launch.sh && \
+  echo "/bin/${PRODUCT_NAME} -nobrowser -data=/config" >> /build/launch.sh && \
+  chmod +x /build/launch.sh
+
+FROM alpine:latest
 
 LABEL build="JusteReseau - Version: ${RELEASE_TAG}"
-LABEL org.opencontainers.image.description="This is a docker image for Sonarr, that work with Kubernetes security baselines."
+LABEL org.opencontainers.image.description="This is a docker image for ${PRODUCT_NAME}, that work with Kubernetes security baselines."
 LABEL org.opencontainers.image.licenses="WTFPL"
-LABEL org.opencontainers.image.source="https://github.com/justereseau/Sonarr"
+LABEL org.opencontainers.image.source="https://github.com/justereseau/Servarr"
 LABEL maintainer="JusteSonic"
 
-# Do the package update and install
-RUN apk update && apk upgrade && apk add mediainfo \
-  && apk add --no-cache mono --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-  && cert-sync /etc/ssl/certs/ca-certificates.crt \
-  && rm -rf /var/cache/apk/*
+COPY --from=builder /build /bin
 
-RUN wget -O /tmp/binary.tar.gz ${DOWNLOAD_URL} \
-  && echo "${DOWNLOAD_HASH}  /tmp/binary.tar.gz" | sha256sum -c - \
-  && tar -xvzf /tmp/binary.tar.gz -C /opt \
-  && rm -rf /tmp/*
+# Install runtime dependencies
+RUN apk add --no-cache libintl sqlite-libs icu-libs && rm -rf /var/cache/apk/*
 
 # Ensure the Servarr user and group exists and set the permissions
 RUN adduser -D -u 1000 -h /config servarr \
   && mkdir -p /config \
   && chown -R servarr:servarr /config \
-  && chown -R servarr:servarr /opt/Sonarr
+  && chown -R servarr:servarr /bin
 
 # Set the user
 USER servarr
@@ -36,4 +62,4 @@ USER servarr
 EXPOSE 8989
 
 # Set the command
-CMD ["mono", "--debug", "/opt/Sonarr/Sonarr.exe", "-nobrowser", "-data=/config"]
+CMD ["/bin/launch.sh"]
