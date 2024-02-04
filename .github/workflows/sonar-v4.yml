@@ -2,6 +2,7 @@ name: Deploy Images to GHCR
 
 env:
   IMAGE_NAME: ghcr.io/justereseau/sonarr
+  PRODUCT_NAME: Sonarr
 
 on:
   workflow_dispatch:
@@ -16,7 +17,8 @@ on:
       - LICENSE
 
 jobs:
-  sonarr_v4_stable:
+  sonarr_v4:
+    name: Sonarr v4
     runs-on: ubuntu-latest
     steps:
       - name: Checkout GitHub Action
@@ -31,15 +33,7 @@ jobs:
 
       - name: Read latest release
         id: get_latest_release
-        run: |
-          echo "RELEASE_DATA=$(curl -s https://services.sonarr.tv/v1/releases | jq -c '."v4-stable" | {tag: .version, assets: .linuxMusl | map_values(.archive)}')" >> "$GITHUB_ENV"
-        shell: bash
-
-      - name: Extract data from JSON response
-        id: extract_data
-        run: |
-          echo "release=$(echo $RELEASE_DATA | jq -r '.tag')" >> "$GITHUB_OUTPUT"
-          echo "release_data=$RELEASE_DATA" >> "$GITHUB_OUTPUT"
+        run: echo "release_tag=$(curl https://api.github.com/repos/${{ env.PRODUCT_NAME }}/${{ env.PRODUCT_NAME }}/releases/latest --silent | jq -r '.tag_name' | sed 's/v//g')" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Set up Docker Buildx
@@ -52,6 +46,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           build-args: |
-            RELEASE_TAG=${{ steps.extract_data.outputs.release }}
-            RELEASE_DATA=${{ steps.extract_data.outputs.release_data }}
-          tags: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{ steps.extract_data.outputs.release }}
+            RELEASE_TAG=${{ steps.get_latest_release.outputs.release_tag }}
+            PRODUCT_NAME=${{ env.PRODUCT_NAME }}
+            BRANCH_NAME=main
+            OS_NAME=linux-musl
+          tags: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{ steps.get_latest_release.outputs.release_tag }}
