@@ -1,4 +1,4 @@
-FROM alpine:latest as builder
+FROM alpine:latest AS builder
 
 # Read the release version from the build args
 ARG RELEASE_TAG
