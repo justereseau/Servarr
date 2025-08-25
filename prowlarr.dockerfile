@@ -28,11 +28,12 @@ RUN wget -O /tmp/binary.tar.gz $(cat /tmp/download_url) && \
   tar -xvzf /tmp/binary.tar.gz -C /build --strip-components=1 && \
   rm -rf /build/${PRODUCT_NAME}.Update
 
-FROM alpine:latest
+# Write a launch script
+RUN echo "#!/bin/sh" > /build/launch.sh && \
+  echo "/bin/${PRODUCT_NAME} -nobrowser -data=/config" >> /build/launch.sh && \
+  chmod +x /build/launch.sh
 
-# Read the release version from the build args
-ARG RELEASE_TAG
-ARG PRODUCT_NAME
+FROM alpine:latest
 
 LABEL build="JusteReseau - Version: ${RELEASE_TAG}"
 LABEL org.opencontainers.image.description="This is a docker image for ${PRODUCT_NAME}, that work with Kubernetes security baselines."
@@ -41,7 +42,6 @@ LABEL org.opencontainers.image.source="https://github.com/justereseau/Servarr"
 LABEL maintainer="JusteSonic"
 
 COPY --from=builder /build /bin
-
 
 # Install runtime dependencies
 RUN apk add --no-cache libintl sqlite-libs icu-libs && rm -rf /var/cache/apk/*
@@ -65,4 +65,4 @@ USER servarr
 EXPOSE 8989
 
 # Set the command
-CMD ["/bin/${PRODUCT_NAME}", "-nobrowser", "-data=/config"]
+CMD ["/bin/launch.sh"]
