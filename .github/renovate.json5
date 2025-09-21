@@ -9,7 +9,7 @@
       matchStrings: ["^APP_VERSION=(?<currentValue>.+)$"],
       versioningTemplate: "semver",
       datasourceTemplate: "github-tags",
-      packageName: "{{parentDir}}/{{parentDir}}",
+      depNameTemplate: "{{parentDir}}/{{parentDir}}",
     },
   ],
 }
