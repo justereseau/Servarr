@@ -6,10 +6,9 @@
     {
       customType: "regex",
       managerFilePatterns: ["*/VERSION"],
-      matchStrings: ["^(?<currentValue>.*)$"],
+      matchStrings: ["^(?<depNameTemplate>.*):(?<currentValue>.*)$"],
       versioningTemplate: "loose",
       datasourceTemplate: "github-tags",
-      depNameTemplate: "Sonarr/Sonarr",
     },
   ],
 }
