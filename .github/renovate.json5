@@ -5,10 +5,27 @@
   customManagers: [
     {
       customType: "regex",
-      managerFilePatterns: ["*/VERSION"],
-      matchStrings: ["^(?<depNameTemplate>.*):(?<currentValue>.*)$"],
+      managerFilePatterns: ["sonarr/VERSION"],
+      matchStrings: ["^(?<depNameTemplate>sonarr):(?<currentValue>.*)$"],
       versioningTemplate: "loose",
       datasourceTemplate: "github-tags",
+      depNameTemplate: "Sonarr/Sonarr",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: ["radarr/VERSION"],
+      matchStrings: ["^(?<depNameTemplate>radarr):(?<currentValue>.*)$"],
+      versioningTemplate: "loose",
+      datasourceTemplate: "github-tags",
+      depNameTemplate: "Radarr/Radarr",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: ["lidarr/VERSION"],
+      matchStrings: ["^(?<depNameTemplate>lidarr):(?<currentValue>.*)$"],
+      versioningTemplate: "loose",
+      datasourceTemplate: "github-tags",
+      depNameTemplate: "Lidarr/Lidarr",
     },
   ],
 }
