@@ -9,7 +9,7 @@
       matchStrings: ["^(?<currentValue>.*)$"],
       versioningTemplate: "loose",
       datasourceTemplate: "github-tags",
-      depNameTemplate: "{{parentDir}}/{{parentDir}}",
+      depNameTemplate: "Sonarr/Sonarr",
     },
   ],
 }
