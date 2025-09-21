@@ -1,7 +1,6 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: ["config:recommended"],
-  enabledManagers: ["custom.regex"],
   customManagers: [
     {
       customType: "regex",
@@ -26,6 +25,13 @@
       versioningTemplate: "loose",
       datasourceTemplate: "github-tags",
       depNameTemplate: "Prowlarr/Prowlarr",
+    },
+  ],
+  packageRules: [
+    {
+      matchManagers: ["custom.regex"],
+      matchUpdateTypes: ["minor", "patch"],
+      automerge: true,
     },
   ],
 }
