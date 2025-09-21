@@ -10,7 +10,7 @@ on:
     branches:
       - main
     paths:
-      - "sonarr/**"
+      - "Sonarr/**"
 
 jobs:
   sonarr_v4:
