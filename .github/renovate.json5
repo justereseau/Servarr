@@ -8,7 +8,6 @@
       managerFilePatterns: ["*/VERSION"],
       matchStrings: ["^APP_VERSION=(?<currentValue>.+)$"],
       versioningTemplate: "semver",
-      depNameTemplate: "{{parentDir}}",
       datasourceTemplate: "github-tags",
       packageName: "{{parentDir}}/{{parentDir}}",
     },
