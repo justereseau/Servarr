@@ -6,7 +6,7 @@
     {
       customType: "regex",
       managerFilePatterns: ["Sonarr/VERSION"],
-      matchStrings: ["^(?<currentValue>.*)$"],
+      matchStrings: ["^(?<currentValue>v(\\d+.)+\\d+)$"],
       versioningTemplate: "loose",
       datasourceTemplate: "github-tags",
       depNameTemplate: "Sonarr/Sonarr",
@@ -14,7 +14,7 @@
     {
       customType: "regex",
       managerFilePatterns: ["Radarr/VERSION"],
-      matchStrings: ["^(?<currentValue>.*)$"],
+      matchStrings: ["^(?<currentValue>v(\\d+.)+\\d+)$"],
       versioningTemplate: "loose",
       datasourceTemplate: "github-tags",
       depNameTemplate: "Radarr/Radarr",
@@ -22,7 +22,7 @@
     {
       customType: "regex",
       managerFilePatterns: ["Prowlarr/VERSION"],
-      matchStrings: ["^(?<currentValue>.*)$"],
+      matchStrings: ["^(?<currentValue>v(\\d+.)+\\d+)$"],
       versioningTemplate: "loose",
       datasourceTemplate: "github-tags",
       depNameTemplate: "Prowlarr/Prowlarr",
