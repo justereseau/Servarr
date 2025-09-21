@@ -7,7 +7,7 @@
       customType: "regex",
       managerFilePatterns: ["*/VERSION"],
       matchStrings: ["^APP_VERSION=(?<currentValue>.+)$"],
-      versioningTemplate: "semver",
+      versioningTemplate: "loose",
       datasourceTemplate: "github-tags",
       depNameTemplate: "{{parentDir}}/{{parentDir}}",
     },
