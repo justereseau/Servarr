@@ -6,10 +6,11 @@
     {
       "customType": "regex",
       "managerFilePatterns": ["*/VERSION"],
-      "matchStrings": ["APP_VERSION=(?<currentValue>.*)"],
-      "datasourceTemplate": "git-tags",
+      "matchStrings": ["^APP_VERSION=(?<currentValue>.+)$"],
+      "versioningTemplate": "semver",
       "depNameTemplate": "{{parentDir}}",
-      "versioningTemplate": "semver"
+      "datasourceTemplate": "github-tags",
+      "packageName": "{{parentDir}}/{{parentDir}}"
     }
   ]
 }
