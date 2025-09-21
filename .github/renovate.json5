@@ -6,7 +6,7 @@
     {
       customType: "regex",
       managerFilePatterns: ["sonarr/VERSION"],
-      matchStrings: ["^(?<depNameTemplate>sonarr):(?<currentValue>.*)$"],
+      matchStrings: ["^(?<currentValue>.*)$"],
       versioningTemplate: "loose",
       datasourceTemplate: "github-tags",
       depNameTemplate: "Sonarr/Sonarr",
@@ -14,7 +14,7 @@
     {
       customType: "regex",
       managerFilePatterns: ["radarr/VERSION"],
-      matchStrings: ["^(?<depNameTemplate>radarr):(?<currentValue>.*)$"],
+      matchStrings: ["^(?<currentValue>.*)$"],
       versioningTemplate: "loose",
       datasourceTemplate: "github-tags",
       depNameTemplate: "Radarr/Radarr",
@@ -22,7 +22,7 @@
     {
       customType: "regex",
       managerFilePatterns: ["lidarr/VERSION"],
-      matchStrings: ["^(?<depNameTemplate>lidarr):(?<currentValue>.*)$"],
+      matchStrings: ["^(?<currentValue>.*)$"],
       versioningTemplate: "loose",
       datasourceTemplate: "github-tags",
       depNameTemplate: "Lidarr/Lidarr",
