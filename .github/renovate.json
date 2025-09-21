@@ -4,10 +4,10 @@
   "customManagers": [
     {
       "customType": "regex",
-      "managerFilePatterns": ["prowlarr/VERSION"],
+      "managerFilePatterns": ["*/VERSION"],
       "matchStrings": ["APP_VERSION=(?<currentValue>.*)"],
       "datasourceTemplate": "git-tags",
-      "depNameTemplate": "Prowlarr",
+      "depNameTemplate": "{{parentDir}}",
       "versioningTemplate": "semver"
     }
   ]
