@@ -10,7 +10,7 @@ on:
     branches:
       - main
     paths:
-      - 'sonarr/**'
+      - "sonarr/**"
 
 jobs:
   sonarr_v4:
@@ -27,9 +27,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Read latest release
-        id: get_latest_release
-        run: echo "release_tag=$(curl https://api.github.com/repos/${{ env.PRODUCT_NAME }}/${{ env.PRODUCT_NAME }}/releases/latest --silent | jq -r '.tag_name' | sed 's/v//g')" >> "$GITHUB_OUTPUT"
+      - name: Read the version from the file
+        id: get_version
+        run: echo "release_tag=$(cat sonarr/VERSION | sed 's/v//g')" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Set up Docker Buildx
@@ -43,8 +43,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           build-args: |
-            RELEASE_TAG=${{ steps.get_latest_release.outputs.release_tag }}
+            RELEASE_TAG=${{ steps.get_version.outputs.release_tag }}
             PRODUCT_NAME=${{ env.PRODUCT_NAME }}
             BRANCH_NAME=main
             OS_NAME=linux-musl
-          tags: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{ steps.get_latest_release.outputs.release_tag }}
+          tags: ${{ env.IMAGE_NAME }}:latest,${{ env.IMAGE_NAME }}:${{ steps.get_version.outputs.release_tag }}
