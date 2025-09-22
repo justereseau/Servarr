@@ -10,6 +10,7 @@ on:
     branches:
       - main
     paths:
+      - ".github/workflows/Prowlarr.yml"
       - "Prowlarr/**"
 
 jobs:
@@ -29,7 +30,7 @@ jobs:
 
       - name: Read the version from the file
         id: get_version
-        run: echo "release_tag=$(cat prowlarr/VERSION | sed 's/v//g')" >> "$GITHUB_OUTPUT"
+        run: echo "release_tag=$(cat Prowlarr/VERSION | sed 's/v//g')" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Set up Docker Buildx
