@@ -10,6 +10,7 @@ on:
     branches:
       - main
     paths:
+      - ".github/workflows/Radarr.yml"
       - "Radarr/**"
 
 jobs:
@@ -29,7 +30,7 @@ jobs:
 
       - name: Read the version from the file
         id: get_version
-        run: echo "release_tag=$(cat radarr/VERSION | sed 's/v//g')" >> "$GITHUB_OUTPUT"
+        run: echo "release_tag=$(cat Radarr/VERSION | sed 's/v//g')" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Set up Docker Buildx
