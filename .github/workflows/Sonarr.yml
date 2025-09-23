@@ -30,7 +30,7 @@ jobs:
 
       - name: Read the version from the file
         id: get_version
-        run: echo "release_tag=$(cat sonarr/VERSION | sed 's/v//g')" >> "$GITHUB_OUTPUT"
+        run: echo "release_tag=$(cat Sonarr/VERSION | sed 's/v//g')" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Set up Docker Buildx
