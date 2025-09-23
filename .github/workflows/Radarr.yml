@@ -40,7 +40,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: Radarr
-          file: main.dockerfile
+          file: ./main.dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           build-args: |
