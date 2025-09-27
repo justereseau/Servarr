@@ -41,6 +41,7 @@
       managerFilePatterns: ["Ombi/appconfig.json"],
       matchStrings: ['{ "depName": origin, "currentValue": version }'],
       datasourceTemplate: "github-tags",
+      versioningTemplate: "loose",
     },
   ],
   packageRules: [
