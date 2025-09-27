@@ -1,6 +1,6 @@
 {
   "origin": "Ombi-app/Ombi",
-  "version": "v3.2.1",
+  "version": "v4.47.1",
   "per_arch_packages": {
     "linux-x64": "linux-x64.tar.gz",
     "linux-arm64": "linux-arm64.tar.gz"
