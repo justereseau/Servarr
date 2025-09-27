@@ -3,16 +3,14 @@ name: Build and Push App
 on:
   workflow_call:
     inputs:
-      image_name:
-        required: true
-        type: string
       app_name:
         required: true
         type: string
-      platforms:
+
+      image_registry:
         required: false
         type: string
-        default: "linux/amd64,linux/arm64"
+        default: ghcr.io/justereseau
 
 jobs:
   build-and-push:
@@ -28,9 +26,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Read the version from the file
-        id: get_version
-        run: echo "release_tag=$(cat ${{ inputs.app_name }}/VERSION | sed 's/v//g')" >> "$GITHUB_OUTPUT"
+      - name: Read the config file
+        id: app_config
+        run: |
+          echo "tag=$(yq e '.version' ${{ inputs.app_name }}/appconfig.yaml | sed 's/v//g')" >> "$GITHUB_OUTPUT"
+          echo "image=${{ inputs.image_registry }}/$(yq e '.name | downcase' ${{ inputs.app_name }}/appconfig.yaml)" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Set up Docker Buildx
@@ -42,8 +42,5 @@ jobs:
           context: ${{ inputs.app_name }}
           file: ${{ inputs.app_name }}/main.dockerfile
           push: true
-          platforms: ${{ inputs.platforms }}
-          build-args: |
-            APP_NAME=${{ inputs.app_name }}
-            RELEASE_TAG=${{ steps.get_version.outputs.release_tag }}
-          tags: ${{ inputs.image_name }}:latest,${{ inputs.image_name }}:${{ steps.get_version.outputs.release_tag }}
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.app_config.outputs.image }}:latest,${{ steps.app_config.outputs.image }}:${{ steps.app_config.outputs.tag }}

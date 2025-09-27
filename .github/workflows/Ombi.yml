@@ -6,12 +6,12 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/Ombi.yml"
-      - "Ombi/**"
+      - .github/workflows/Build-And-Push.yaml
+      - .github/workflows/Ombi.yml
+      - Ombi/**
 
 jobs:
   template:
-    uses: "./.github/workflows/Build-And-Push.yaml"
+    uses: ./.github/workflows/Build-And-Push.yaml
     with:
-      image_name: ghcr.io/justereseau/ombi
-      app_name: "Ombi"
+      app_name: Ombi
