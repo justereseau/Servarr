@@ -1,0 +1,17 @@
+name: Build Ombi
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/Ombi.yml"
+      - "Ombi/**"
+
+jobs:
+  template:
+    uses: "./.github/workflows/Build-And-Push.yaml"
+    with:
+      image_name: ghcr.io/justereseau/ombi
+      app_name: "Ombi"

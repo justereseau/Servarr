@@ -35,6 +35,9 @@ RUN echo "#!/bin/sh" > /build/launch.sh && \
 
 FROM alpine:latest
 
+ARG RELEASE_TAG
+ARG PRODUCT_NAME
+
 LABEL build="JusteReseau - Version: ${RELEASE_TAG}"
 LABEL org.opencontainers.image.description="This is a docker image for ${PRODUCT_NAME}, that work with Kubernetes security baselines."
 LABEL org.opencontainers.image.licenses="WTFPL"
