@@ -35,6 +35,13 @@
       datasourceTemplate: "github-tags",
       depNameTemplate: "Ombi-app/Ombi",
     },
+    {
+      customType: "jsonata",
+      fileFormat: "json",
+      managerFilePatterns: ["Ombi/appconfig.json"],
+      matchStrings: ['{ "depName": origin, "currentValue": version }'],
+      datasourceTemplate: "github-tags",
+    },
   ],
   packageRules: [
     {
