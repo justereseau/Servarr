@@ -27,6 +27,14 @@
       datasourceTemplate: "github-tags",
       depNameTemplate: "Prowlarr/Prowlarr",
     },
+    {
+      customType: "regex",
+      managerFilePatterns: ["Ombi/VERSION"],
+      matchStrings: ["^(?<currentValue>v(\\d+.)+\\d+)$"],
+      versioningTemplate: "loose",
+      datasourceTemplate: "github-tags",
+      depNameTemplate: "Ombi-app/Ombi",
+    },
   ],
   packageRules: [
     {
