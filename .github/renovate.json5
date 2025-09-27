@@ -37,8 +37,7 @@
     },
     {
       customType: "jsonata",
-      fileFormat: "json",
-      managerFilePatterns: ["Ombi/appconfig.json"],
+      managerFilePatterns: ["*/appconfig.json"],
       matchStrings: ['[{ "depName": origin, "currentValue": version }]'],
       datasourceTemplate: "github-tags",
       versioningTemplate: "loose",
