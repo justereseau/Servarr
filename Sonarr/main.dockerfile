@@ -1,47 +1,41 @@
 FROM alpine:latest AS builder
 
-# Read the release version from the build args
-ARG RELEASE_TAG
-ARG PRODUCT_NAME
-ARG BRANCH_NAME
-ARG OS_NAME
-
 # Set the working directory
 WORKDIR /build
 
-# Get the download URL
-RUN case $(uname -m) in \
+# Get the config file
+COPY appconfig.yaml /conf.yml
+
+# Get the download URL and download the binary
+RUN apk add --no-cache yq && \
+  export VERSION=$(yq e '.version' /conf.yml | sed 's/v//g') && \
+  case $(uname -m) in \
   x86_64) \
-  echo https://github.com/${PRODUCT_NAME}/${PRODUCT_NAME}/releases/download/v${RELEASE_TAG}/${PRODUCT_NAME}.${BRANCH_NAME}.${RELEASE_TAG}.${OS_NAME}-x64.tar.gz > /tmp/download_url \
+  echo https://github.com/Sonarr/Sonarr/releases/download/v$VERSION/Sonarr.main.$VERSION.linux-musl-x64.tar.gz > /tmp/download_url \
   ;; \
   aarch64) \
-  echo https://github.com/${PRODUCT_NAME}/${PRODUCT_NAME}/releases/download/v${RELEASE_TAG}/${PRODUCT_NAME}.${BRANCH_NAME}.${RELEASE_TAG}.${OS_NAME}-arm64.tar.gz > /tmp/download_url \
+  echo https://github.com/Sonarr/Sonarr/releases/download/v$VERSION/Sonarr.main.$VERSION.linux-musl-arm64.tar.gz > /tmp/download_url \
   ;; \
   *) \
-  echo "Unsupported architecture > $(uname -m)" \
+  echo "Unsupported architecture : $(uname -m)" \
   exit 1 \
   ;; \
   esac
 
 # Download and extract the binary
-RUN wget -O /tmp/binary.tar.gz $(cat /tmp/download_url) && \
+RUN echo "Download URL: $(cat /tmp/download_url)" && \
+  wget -O /tmp/binary.tar.gz $(cat /tmp/download_url) && \
   tar -xvzf /tmp/binary.tar.gz -C /build --strip-components=1 && \
-  rm -rf /build/${PRODUCT_NAME}.Update
-
-# Write a launch script
-RUN echo "#!/bin/sh" > /build/launch.sh && \
-  echo "/bin/${PRODUCT_NAME} -nobrowser -data=/config" >> /build/launch.sh && \
-  chmod +x /build/launch.sh
+  rm -rf /build/Sonarr.Update
 
 FROM alpine:latest
 
-LABEL build="JusteReseau - Version: ${RELEASE_TAG}"
-LABEL org.opencontainers.image.description="This is a docker image for ${PRODUCT_NAME}, that work with Kubernetes security baselines."
+LABEL org.opencontainers.image.description="This is a docker image for Sonarr, that work with Kubernetes security baselines."
 LABEL org.opencontainers.image.licenses="WTFPL"
 LABEL org.opencontainers.image.source="https://github.com/justereseau/Servarr"
 LABEL maintainer="JusteSonic"
 
-COPY --from=builder /build /bin
+COPY --from=builder /build /app
 
 # Install runtime dependencies
 RUN apk add --no-cache libintl sqlite-libs icu-libs && rm -rf /var/cache/apk/*
@@ -50,7 +44,7 @@ RUN apk add --no-cache libintl sqlite-libs icu-libs && rm -rf /var/cache/apk/*
 RUN adduser -D -u 1000 -h /config servarr \
   && mkdir -p /config \
   && chown -R servarr:servarr /config \
-  && chown -R servarr:servarr /bin
+  && chown -R servarr:servarr /app
 
 # Set the user
 USER servarr
@@ -59,4 +53,4 @@ USER servarr
 EXPOSE 8989
 
 # Set the command
-CMD ["/bin/launch.sh"]
+CMD ["/app/Sonarr", "-nobrowser", "-data=/config"]
