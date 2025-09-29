@@ -1,15 +1,10 @@
-# Sonarr Kubernetes [![License: WTFPL](https://img.shields.io/badge/License-WTFPL-brightgreen.svg)](http://www.wtfpl.net/about/)
+# Kubernetes Compatible Applications [![License: WTFPL](https://img.shields.io/badge/License-WTFPL-brightgreen.svg)](http://www.wtfpl.net/about/)
 
-[![Radarr](https://github.com/justereseau/Servarr/actions/workflows/Radarr.yml/badge.svg)](https://github.com/justereseau/Servarr/actions/workflows/Radarr.yml)
+This build custom docker images for the following applications, that work with Kubernetes security baselines:
 
-[![Sonarr](https://github.com/justereseau/Servarr/actions/workflows/Sonarr.yml/badge.svg)](https://github.com/justereseau/Servarr/actions/workflows/Sonarr.yml)
-
-[![Prowlarr](https://github.com/justereseau/Servarr/actions/workflows/Prowlarr.yml/badge.svg)](https://github.com/justereseau/Servarr/actions/workflows/Prowlarr.yml)
-
-This is a docker image for Radarr and Sonarr, that work with Kubernetes security baselines.
-
-More information about Sonarr can be found on the official websites:
-
-- [Prowlarr](https://github.com/Prowlarr/Prowlarr)
-- [Radarr](https://github.com/Radarr/Radarr)
-- [Sonarr](https://github.com/Sonarr/Sonarr)
+| **App**                                        | **Pipeline Status**                                                                                                                                                 |
+|----------------------------------------------  |---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|[Ombi](https://github.com/Ombi-app/Ombi)        |[![Ombi](https://github.com/justereseau/Servarr/actions/workflows/Ombi.yml/badge.svg)](https://github.com/justereseau/Servarr/actions/workflows/Ombi.yml)            |
+|[Prowlarr](https://github.com/Prowlarr/Prowlarr)|[![Prowlarr](https://github.com/justereseau/Servarr/actions/workflows/Prowlarr.yml/badge.svg)](https://github.com/justereseau/Servarr/actions/workflows/Prowlarr.yml)|
+|[Radarr](https://github.com/Radarr/Radarr)      |[![Radarr](https://github.com/justereseau/Servarr/actions/workflows/Radarr.yml/badge.svg)](https://github.com/justereseau/Servarr/actions/workflows/Radarr.yml)      |
+|[Sonarr](https://github.com/Sonarr/Sonarr)      |[![Sonarr](https://github.com/justereseau/Servarr/actions/workflows/Sonarr.yml/badge.svg)](https://github.com/justereseau/Servarr/actions/workflows/Sonarr.yml)      |
