@@ -59,4 +59,4 @@ USER servarr
 EXPOSE 8989
 
 # Set the command
-CMD ["/bin/Prowlarr" "-nobrowser" "-data=/config"]
+CMD ["/app/Prowlarr", "-nobrowser", "-data=/config"]
