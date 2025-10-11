@@ -46,6 +46,8 @@ RUN adduser -D -u 1000 -h /config servarr \
   && chown -R servarr:servarr /config \
   && chown -R servarr:servarr /app
 
+COPY --chown=0:1000 --chmod=755 ./scripts /scripts
+
 # Set the user
 USER servarr
 
