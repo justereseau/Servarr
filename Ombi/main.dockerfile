@@ -1,4 +1,4 @@
-FROM alpine:latest AS builder
+FROM alpine:3.22 AS builder
 
 # Set the working directory
 WORKDIR /build
