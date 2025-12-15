@@ -1,7 +1,7 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: ["config:recommended"],
-  enabledManagers: ["custom.jsonata"],
+  enabledManagers: ["custom.jsonata", "dockerfile"],
   customManagers: [
     {
       customType: "jsonata",
@@ -17,6 +17,11 @@
       matchDatasources: ["github-tags"],
       matchUpdateTypes: ["minor", "patch"],
       automerge: true,
+    },
+    {
+      matchManagers: ["dockerfile"],
+      matchUpdateTypes: ["minor", "patch"],
+      automerge: false,
     },
   ],
 }
