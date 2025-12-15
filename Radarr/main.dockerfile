@@ -1,4 +1,4 @@
-FROM alpine:3.22 AS builder
+FROM alpine:3.23 AS builder
 
 # Set the working directory
 WORKDIR /build
@@ -28,7 +28,7 @@ RUN echo "Download URL: $(cat /tmp/download_url)" && \
   tar -xvzf /tmp/binary.tar.gz -C /build --strip-components=1 && \
   rm -rf /build/Radarr.Update
 
-FROM alpine:3.22
+FROM alpine:3.23
 
 LABEL org.opencontainers.image.description="This is a docker image for Radarr, that work with Kubernetes security baselines."
 LABEL org.opencontainers.image.licenses="WTFPL"
