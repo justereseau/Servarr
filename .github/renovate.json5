@@ -4,7 +4,7 @@
   enabledManagers: ["custom.jsonata", "dockerfile"],
   customManagers: [
     {
-      customType:  "jsonata",
+      customType: "jsonata",
       fileFormat: "yaml",
       managerFilePatterns: ["**/appconfig.yaml"],
       matchStrings: ['[{ "depName": origin, "currentValue": version }]'],
