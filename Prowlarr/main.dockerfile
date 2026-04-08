@@ -46,12 +46,6 @@ RUN adduser -D -u 1000 -h /config servarr \
   && chown -R servarr:servarr /config \
   && chown -R servarr:servarr /app
 
-# Download the custom definitions from Jackett
-RUN mkdir -p /config/Definitions/Custom && \
-  wget -O /config/Definitions/Custom/yggtorrent.yml https://raw.githubusercontent.com/Jackett/Jackett/master/src/Jackett.Common/Definitions/yggtorrent.yml && \
-  wget -O /config/Definitions/Custom/yggcookie.yml https://raw.githubusercontent.com/Jackett/Jackett/master/src/Jackett.Common/Definitions/yggcookie.yml && \
-  chown -R servarr:servarr /config/Definitions
-
 # Set the user
 USER servarr
 
