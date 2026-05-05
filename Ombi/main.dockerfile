@@ -27,7 +27,7 @@ RUN echo "Download URL: $(cat /tmp/download_url)" && \
   wget -O /tmp/binary.tar.gz $(cat /tmp/download_url) && \
   tar -xvzf /tmp/binary.tar.gz -C /build --strip-components=1
 
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 LABEL org.opencontainers.image.description="This is a docker image for Ombi, that work with Kubernetes security baselines."
 LABEL org.opencontainers.image.licenses="WTFPL"
