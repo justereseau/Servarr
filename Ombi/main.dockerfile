@@ -37,7 +37,7 @@ LABEL maintainer="JusteSonic"
 COPY --from=builder /build /app
 
 # Install runtime dependencies
-RUN apt-get update && apt-get install -y libicu74 && rm -rf /var/cache/apt/*
+RUN apt-get update && apt-get install -y libicu78 && rm -rf /var/cache/apt/*
 
 # Ensure the Servarr user and group exists and set the permissions
 RUN echo 'servarr:x:1000:1000:servarr:/home/servarr:/bin/sh' >> /etc/passwd \
