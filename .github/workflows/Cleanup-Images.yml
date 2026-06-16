@@ -2,7 +2,18 @@ name: Cleanup old images
 
 on:
   workflow_dispatch:
+    inputs:
+      images:
+        description: 'JSON array of image names'
+        required: true
+        default: '["sonarr", "radarr", "prowlarr", "ombi"]'
+        type: string
   workflow_call:
+    inputs:
+      images:
+        description: 'JSON array of image names'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -14,7 +25,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [sonarr, radarr, prowlarr, ombi]
+        service: ${{ fromJson(inputs.images) }}
     steps:
       - name: Delete old images (keep last 5 versions)
         uses: actions/delete-package-versions@v5
