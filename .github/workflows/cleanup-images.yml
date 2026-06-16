@@ -19,11 +19,8 @@ jobs:
       - name: Delete old images (keep last 5 versions)
         uses: actions/delete-package-versions@v5
         with:
-          package-name: ghcr.io/justereseau/${{ matrix.service }}
+          package-name: ${{ matrix.service }}
           package-type: container
-          # Keep the 5 most recent versions
           min-versions-to-keep: 5
-          # Delete only versions not tagged with 'latest' to preserve the current release
           delete-only-untagged-versions: false
-          # Use token with package write permissions
           token: ${{ secrets.GITHUB_TOKEN }}
