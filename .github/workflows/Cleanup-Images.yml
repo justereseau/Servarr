@@ -1,11 +1,16 @@
 name: Cleanup old images
 
 on:
+  schedule:
+    # Hourly drain. GITHUB_TOKEN allows ~1000 API requests/hour per repo, so
+    # each run clears up to ~1000 versions across all images and the next run
+    # picks up where it left off.
+    - cron: '0 * * * *'
   workflow_dispatch:
     inputs:
       images:
         description: 'JSON array of image names'
-        required: true
+        required: false
         default: '["sonarr", "radarr", "prowlarr", "ombi"]'
         type: string
   workflow_call:
@@ -25,7 +30,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: ${{ fromJson(inputs.images) }}
+        # Scheduled runs pass no inputs, so fall back to the full image list.
+        service: ${{ fromJson(inputs.images || '["sonarr", "radarr", "prowlarr", "ombi"]') }}
     steps:
       - name: Delete old images (keep the 5 most recent tagged releases)
         env:
@@ -69,12 +75,14 @@ jobs:
               | jq -r '.manifests[]?.digest // empty' >>"$keep_list"
           done
           sort -u "$keep_list" -o "$keep_list"
-          echo "Keeping $(wc -l <"$keep_list" | tr -d ' ') digest(s): tagged releases + their platform/attestation images"
+          keep_count="$(wc -l <"$keep_list" | tr -d ' ')"
+          echo "Keeping ${keep_count} digest(s): tagged releases + their platform/attestation images"
 
-          # Delete every version not in the keep list. Best-effort: a failed
-          # delete warns (with the API error) but does not fail the job.
-          # DEBUG: cap delete attempts per image while iterating on this script.
-          max_deletes=100
+          # Delete every version not in the keep list. Cap at 1000 deletes per
+          # run (the GITHUB_TOKEN hourly request budget). On the first HTTP 403
+          # the rate limit is spent, so stop and report — this is expected and
+          # must NOT fail the job; the next hourly run resumes the backlog.
+          max_deletes=1000
           attempts=0
           deleted=0
           while read -r id digest; do
@@ -83,7 +91,7 @@ jobs:
               continue
             fi
             if [ "$attempts" -ge "$max_deletes" ]; then
-              echo "Reached debug cap of ${max_deletes} delete attempts; stopping early."
+              echo "Reached the ${max_deletes}-delete cap for this run; stopping."
               break
             fi
             attempts=$((attempts + 1))
@@ -91,9 +99,12 @@ jobs:
               "/orgs/${OWNER}/packages/container/${PACKAGE}/versions/${id}" 2>&1)"; then
               echo "Deleted ${id} (${digest})"
               deleted=$((deleted + 1))
+            elif printf '%s' "$err" | grep -q "HTTP 403"; then
+              echo "Hit HTTP 403 (rate limit) after ${deleted} delete(s); stopping this run."
+              break
             else
               echo "::warning::Failed to delete version ${id} (${digest}): ${err}"
             fi
           done < <(jq -r '.[] | "\(.id) \(.digest)"' <<<"$versions")
 
-          echo "Done: attempted ${attempts}, deleted ${deleted} version(s)."
+          echo "Done: deleted ${deleted} of ${total} version(s) this run; $((total - deleted)) remain (incl. ${keep_count} kept)."
