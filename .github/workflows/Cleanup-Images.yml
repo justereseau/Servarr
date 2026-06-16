@@ -27,11 +27,65 @@ jobs:
       matrix:
         service: ${{ fromJson(inputs.images) }}
     steps:
-      - name: Delete old images (keep last 5 versions)
-        uses: actions/delete-package-versions@v5
-        with:
-          package-name: ${{ matrix.service }}
-          package-type: container
-          min-versions-to-keep: 5
-          delete-only-untagged-versions: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Delete old images (keep the 5 most recent tagged releases)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER: justereseau
+          PACKAGE: ${{ matrix.service }}
+          KEEP: "5"
+        run: |
+          set -euo pipefail
+
+          echo "Collecting versions for ${OWNER}/${PACKAGE} ..."
+          versions="$(gh api --paginate \
+            "/orgs/${OWNER}/packages/container/${PACKAGE}/versions?per_page=100" \
+            -q '.[] | {id, digest: .name, created_at, tags: (.metadata.container.tags // [])}' \
+            | jq -s '.')"
+          total="$(jq 'length' <<<"$versions")"
+          echo "Found ${total} version(s)"
+
+          # The N most recent *tagged* versions are the releases we keep.
+          kept_tags="$(jq -r --argjson keep "$KEEP" \
+            '[.[] | select((.tags | length) > 0)] | sort_by(.created_at) | reverse | .[0:$keep][].digest' \
+            <<<"$versions")"
+
+          if [ -z "$kept_tags" ]; then
+            echo "No tagged versions found; skipping cleanup to avoid wiping the package."
+            exit 0
+          fi
+
+          # Each tagged release is a multi-arch manifest list that references
+          # untagged platform/attestation child manifests. Read each kept
+          # manifest from the registry so those children are preserved too.
+          reg_token="$(printf '%s' "$GH_TOKEN" | base64 -w0)"
+          keep_list="$(mktemp)"
+          printf '%s\n' "$kept_tags" >"$keep_list"
+          for digest in $kept_tags; do
+            curl -fsSL \
+              -H "Authorization: Bearer ${reg_token}" \
+              -H "Accept: application/vnd.oci.image.index.v1+json" \
+              -H "Accept: application/vnd.docker.distribution.manifest.list.v2+json" \
+              "https://ghcr.io/v2/${OWNER}/${PACKAGE}/manifests/${digest}" \
+              | jq -r '.manifests[]?.digest // empty' >>"$keep_list"
+          done
+          sort -u "$keep_list" -o "$keep_list"
+          echo "Keeping $(wc -l <"$keep_list" | tr -d ' ') digest(s): tagged releases + their platform/attestation images"
+
+          # Delete every version not in the keep list. Best-effort: a failed
+          # delete warns but does not fail the job.
+          deleted=0
+          while read -r id digest; do
+            [ -n "$id" ] || continue
+            if grep -qxF "$digest" "$keep_list"; then
+              continue
+            fi
+            if gh api --method DELETE \
+              "/orgs/${OWNER}/packages/container/${PACKAGE}/versions/${id}" >/dev/null 2>&1; then
+              echo "Deleted ${id} (${digest})"
+              deleted=$((deleted + 1))
+            else
+              echo "::warning::Failed to delete version ${id} (${digest})"
+            fi
+          done < <(jq -r '.[] | "\(.id) \(.digest)"' <<<"$versions")
+
+          echo "Done: deleted ${deleted} version(s), kept $((total - deleted))."
