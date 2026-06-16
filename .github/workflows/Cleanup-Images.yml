@@ -78,23 +78,16 @@ jobs:
           keep_count="$(wc -l <"$keep_list" | tr -d ' ')"
           echo "Keeping ${keep_count} digest(s): tagged releases + their platform/attestation images"
 
-          # Delete every version not in the keep list. Cap at 1000 deletes per
-          # run (the GITHUB_TOKEN hourly request budget). On the first HTTP 403
-          # the rate limit is spent, so stop and report — this is expected and
-          # must NOT fail the job; the next hourly run resumes the backlog.
-          max_deletes=1000
-          attempts=0
+          # Delete every version not in the keep list. There is no fixed cap:
+          # the loop runs until it runs out of versions or hits an HTTP 403
+          # (rate limit spent), at which point it stops and reports — this is
+          # expected and must NOT fail the job; the next hourly run resumes.
           deleted=0
           while read -r id digest; do
             [ -n "$id" ] || continue
             if grep -qxF "$digest" "$keep_list"; then
               continue
             fi
-            if [ "$attempts" -ge "$max_deletes" ]; then
-              echo "Reached the ${max_deletes}-delete cap for this run; stopping."
-              break
-            fi
-            attempts=$((attempts + 1))
             if err="$(gh api --method DELETE \
               "/orgs/${OWNER}/packages/container/${PACKAGE}/versions/${id}" 2>&1)"; then
               echo "Deleted ${id} (${digest})"
