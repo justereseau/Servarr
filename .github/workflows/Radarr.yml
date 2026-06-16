@@ -15,4 +15,3 @@ jobs:
     uses: ./.github/workflows/Build-And-Push.yaml
     with:
       app_name: Radarr
-      images: '["sonarr", "radarr", "prowlarr", "ombi"]'

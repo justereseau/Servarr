@@ -12,14 +12,11 @@ on:
         type: string
         default: ghcr.io/justereseau
 
-      images:
-        description: 'JSON array of image names to clean up'
-        required: true
-        type: string
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    outputs:
+      image_name: ${{ steps.app_config.outputs.image_name }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -35,6 +32,7 @@ jobs:
         id: app_config
         run: |
           echo "tag=$(yq e '.version' ${{ inputs.app_name }}/appconfig.yaml | sed 's/v//g')" >> "$GITHUB_OUTPUT"
+          echo "image_name=$(yq e '.name | downcase' ${{ inputs.app_name }}/appconfig.yaml)" >> "$GITHUB_OUTPUT"
           echo "image=${{ inputs.image_registry }}/$(yq e '.name | downcase' ${{ inputs.app_name }}/appconfig.yaml)" >> "$GITHUB_OUTPUT"
         shell: bash
 
@@ -51,6 +49,7 @@ jobs:
           tags: ${{ steps.app_config.outputs.image }}:latest,${{ steps.app_config.outputs.image }}:${{ steps.app_config.outputs.tag }}
 
   clean-up:
+    needs: [build-and-push]
     uses: ./.github/workflows/Cleanup-Images.yml
     with:
-      images: ${{ inputs.images }}
+      images: '["${{ needs.build-and-push.outputs.image_name }}"]'
