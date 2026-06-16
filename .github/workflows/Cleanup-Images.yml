@@ -72,20 +72,28 @@ jobs:
           echo "Keeping $(wc -l <"$keep_list" | tr -d ' ') digest(s): tagged releases + their platform/attestation images"
 
           # Delete every version not in the keep list. Best-effort: a failed
-          # delete warns but does not fail the job.
+          # delete warns (with the API error) but does not fail the job.
+          # DEBUG: cap delete attempts per image while iterating on this script.
+          max_deletes=100
+          attempts=0
           deleted=0
           while read -r id digest; do
             [ -n "$id" ] || continue
             if grep -qxF "$digest" "$keep_list"; then
               continue
             fi
-            if gh api --method DELETE \
-              "/orgs/${OWNER}/packages/container/${PACKAGE}/versions/${id}" >/dev/null 2>&1; then
+            if [ "$attempts" -ge "$max_deletes" ]; then
+              echo "Reached debug cap of ${max_deletes} delete attempts; stopping early."
+              break
+            fi
+            attempts=$((attempts + 1))
+            if err="$(gh api --method DELETE \
+              "/orgs/${OWNER}/packages/container/${PACKAGE}/versions/${id}" 2>&1)"; then
               echo "Deleted ${id} (${digest})"
               deleted=$((deleted + 1))
             else
-              echo "::warning::Failed to delete version ${id} (${digest})"
+              echo "::warning::Failed to delete version ${id} (${digest}): ${err}"
             fi
           done < <(jq -r '.[] | "\(.id) \(.digest)"' <<<"$versions")
 
-          echo "Done: deleted ${deleted} version(s), kept $((total - deleted))."
+          echo "Done: attempted ${attempts}, deleted ${deleted} version(s)."
