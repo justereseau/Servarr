@@ -46,4 +46,4 @@ jobs:
           tags: ${{ steps.app_config.outputs.image }}:latest,${{ steps.app_config.outputs.image }}:${{ steps.app_config.outputs.tag }}
 
   clean-up:
-    uses: ./.github/workflows/cleanup-images.yml
+    uses: ./.github/workflows/Cleanup-Images.yml
