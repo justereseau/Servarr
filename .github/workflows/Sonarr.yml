@@ -11,7 +11,7 @@ on:
       - "Sonarr/**"
 
 jobs:
-  template:
+  release:
     uses: ./.github/workflows/Build-And-Push.yaml
     with:
       app_name: Sonarr
