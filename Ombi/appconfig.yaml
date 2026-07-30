@@ -1,6 +1,6 @@
 name: Ombi
 origin: Ombi-app/Ombi
-version: v4.59.5
+version: v4.60.12
 # Ombi ships its develop builds as GitHub pre-releases, so track releases
 # (prerelease-aware) instead of raw tags. See ignoreUnstable rule in renovate.json5.
 datasource: github-releases
