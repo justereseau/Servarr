@@ -7,7 +7,9 @@
       customType: "jsonata",
       fileFormat: "yaml",
       managerFilePatterns: ["**/appconfig.yaml"],
-      matchStrings: ['[{ "depName": origin, "currentValue": version }]'],
+      matchStrings: ['[{ "depName": origin, "currentValue": version, "datasource": datasource }]'],
+      // Apps may override the datasource in their appconfig.yaml; otherwise
+      // fall back to github-tags.
       datasourceTemplate: "github-tags",
       versioningTemplate: "loose",
     },
@@ -17,6 +19,12 @@
       matchDatasources: ["github-tags"],
       matchUpdateTypes: ["minor", "patch"],
       automerge: true,
+    },
+    {
+      // Ombi only publishes GitHub pre-releases (its develop channel), so
+      // allow Renovate to propose unstable versions for it.
+      matchDepNames: ["Ombi-app/Ombi"],
+      ignoreUnstable: false,
     },
     {
       matchManagers: ["dockerfile"],
