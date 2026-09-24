@@ -1,5 +1,5 @@
 name: Plex
-origin: plexinc/pms-docker
+origin: plex-media-server
 version: 1.43.2.10687-563d026ea
-# Plex has no GitHub releases; track the official image tags instead.
-datasource: docker
+# Plex has no GitHub releases; track plex.tv directly (see customDatasources in renovate.json5).
+datasource: custom.plex
