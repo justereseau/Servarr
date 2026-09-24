@@ -27,6 +27,13 @@
       ignoreUnstable: false,
     },
     {
+      // Plex tags are <version>.<build>-<hash>; the regex also skips the
+      // per-arch (-amd64, -arm64, -armhf) tags.
+      matchDepNames: ["plexinc/pms-docker"],
+      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)-[0-9a-f]+$",
+      automerge: true,
+    },
+    {
       matchManagers: ["dockerfile"],
       matchUpdateTypes: ["minor", "patch"],
       automerge: false,

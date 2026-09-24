@@ -1,0 +1,5 @@
+name: Plex
+origin: plexinc/pms-docker
+version: 1.43.2.10687-563d026ea
+# Plex has no GitHub releases; track the official image tags instead.
+datasource: docker

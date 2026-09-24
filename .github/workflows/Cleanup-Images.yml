@@ -8,7 +8,7 @@ on:
       images:
         description: 'JSON array of image names'
         required: false
-        default: '["sonarr", "radarr", "prowlarr", "ombi"]'
+        default: '["sonarr", "radarr", "prowlarr", "ombi", "plex"]'
         type: string
   workflow_call:
     inputs:
@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         # Scheduled runs pass no inputs, so fall back to the full image list.
-        service: ${{ fromJson(inputs.images || '["sonarr", "radarr", "prowlarr", "ombi"]') }}
+        service: ${{ fromJson(inputs.images || '["sonarr", "radarr", "prowlarr", "ombi", "plex"]') }}
     steps:
       - name: Delete old images (keep the 5 most recent tagged releases)
         env:
