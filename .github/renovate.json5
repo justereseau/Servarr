@@ -2,6 +2,15 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: ["config:recommended"],
   enabledManagers: ["custom.jsonata", "dockerfile"],
+  customDatasources: {
+    // Public channel of the Plex downloads API, ahead of the plexinc/pms-docker tags.
+    plex: {
+      defaultRegistryUrlTemplate: "https://plex.tv/api/downloads/5.json",
+      transformTemplates: [
+        '{"releases": [{"version": computer.Linux.version, "releaseTimestamp": $fromMillis(computer.Linux.release_date * 1000)}]}',
+      ],
+    },
+  },
   customManagers: [
     {
       customType: "jsonata",
@@ -25,6 +34,12 @@
       // allow Renovate to propose unstable versions for it.
       matchDepNames: ["Ombi-app/Ombi"],
       ignoreUnstable: false,
+    },
+    {
+      // Plex versions are <version>.<build>-<hash>
+      matchDepNames: ["plex-media-server"],
+      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)-[0-9a-f]+$",
+      automerge: true,
     },
     {
       matchManagers: ["dockerfile"],

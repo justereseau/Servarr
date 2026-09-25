@@ -8,3 +8,4 @@ This build custom docker images for the following applications, that work with K
 |[Prowlarr](https://github.com/Prowlarr/Prowlarr)|[![Prowlarr](https://github.com/justereseau/Servarr/actions/workflows/Prowlarr.yml/badge.svg)](https://github.com/justereseau/Servarr/actions/workflows/Prowlarr.yml)|
 |[Radarr](https://github.com/Radarr/Radarr)      |[![Radarr](https://github.com/justereseau/Servarr/actions/workflows/Radarr.yml/badge.svg)](https://github.com/justereseau/Servarr/actions/workflows/Radarr.yml)      |
 |[Sonarr](https://github.com/Sonarr/Sonarr)      |[![Sonarr](https://github.com/justereseau/Servarr/actions/workflows/Sonarr.yml/badge.svg)](https://github.com/justereseau/Servarr/actions/workflows/Sonarr.yml)      |
+|[Plex](https://github.com/plexinc/pms-docker)   |[![Plex](https://github.com/justereseau/Servarr/actions/workflows/Plex.yml/badge.svg)](https://github.com/justereseau/Servarr/actions/workflows/Plex.yml)                  |

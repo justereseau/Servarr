@@ -1,0 +1,22 @@
+name: Build Plex
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/Build-And-Push.yaml
+      - ".github/workflows/Plex.yml"
+      - "Plex/**"
+  pull_request:
+    paths:
+      - ".github/workflows/Plex.yml"
+      - "Plex/**"
+
+jobs:
+  release:
+    uses: ./.github/workflows/Build-And-Push.yaml
+    with:
+      app_name: Plex
+      push: ${{ github.event_name != 'pull_request' }}
