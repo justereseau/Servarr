@@ -1,4 +1,4 @@
-FROM ubuntu:24.04 AS builder
+FROM ubuntu:26.04 AS builder
 
 ARG TARGETARCH
 
@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
   curl -fL -o /tmp/plex.deb "$URL" && \
   dpkg-deb -x /tmp/plex.deb /build
 
-FROM ubuntu:24.04
+FROM ubuntu:26.04
 
 LABEL org.opencontainers.image.description="This is a docker image for Plex Media Server, that work with Kubernetes security baselines."
 LABEL org.opencontainers.image.licenses="WTFPL"
