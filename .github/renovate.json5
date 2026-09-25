@@ -17,15 +17,14 @@
       fileFormat: "yaml",
       managerFilePatterns: ["**/appconfig.yaml"],
       matchStrings: ['[{ "depName": origin, "currentValue": version, "datasource": datasource }]'],
-      // Apps may override the datasource in their appconfig.yaml; otherwise
-      // fall back to github-tags.
-      datasourceTemplate: "github-tags",
+      // Templates override extracted fields, so honour appconfig's datasource here.
+      datasourceTemplate: "{{#if datasource}}{{{datasource}}}{{else}}github-tags{{/if}}",
       versioningTemplate: "loose",
     },
   ],
   packageRules: [
     {
-      matchDatasources: ["github-tags"],
+      matchDatasources: ["github-tags", "github-releases"],
       matchUpdateTypes: ["minor", "patch"],
       automerge: true,
     },
