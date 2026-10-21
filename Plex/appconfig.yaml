@@ -1,5 +1,5 @@
 name: Plex
 origin: plex-media-server
-version: 1.43.4.10903-e5521bd8c
+version: 1.43.5.11029-6bf8af3f0
 # Plex has no GitHub releases; track plex.tv directly (see customDatasources in renovate.json5).
 datasource: custom.plex
